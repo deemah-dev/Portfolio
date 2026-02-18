@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DVLD System — Project Details</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Syne:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0d0d0f;
+            --bg-card: #131316;
+            --bg-elevated: #1a1a1f;
+            --accent: #c8f561;
+            --accent-dim: rgba(200, 245, 97, 0.12);
+            --accent-border: rgba(200, 245, 97, 0.3);
+            --text: #f0ede8;
+            --text-muted: #7a7880;
+            --text-secondary: #b0adb8;
+            --border: rgba(255, 255, 255, 0.07);
+            --font-display: 'Playfair Display', serif;
+            --font-body: 'Syne', sans-serif;
+            --font-mono: 'IBM Plex Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Noise overlay */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            opacity: 0.04;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* ─── Header ─── */
+        header {
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            background: rgba(13, 13, 15, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 100;
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--accent);
+        }
+
+        .back-link svg {
+            transition: transform 0.2s;
+        }
+
+        .back-link:hover svg {
+            transform: translateX(-3px);
+        }
+
+        .header-label {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        /* ─── Hero ─── */
+        .hero {
+            padding: 6rem 0 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-glow {
+            position: absolute;
+            top: -30%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(200, 245, 97, 0.06) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+        .hero-eyebrow {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--accent);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .hero-eyebrow::before {
+            content: '';
+            display: inline-block;
+            width: 30px;
+            height: 1px;
+            background: var(--accent);
+        }
+
+        h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2.8rem, 6vw, 5rem);
+            font-weight: 700;
+            line-height: 1.08;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.75rem;
+            max-width: 800px;
+        }
+
+        h1 em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .project-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 680px;
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+        }
+
+        .tags {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            padding: 0.4rem 0.9rem;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+            border-radius: 2px;
+            transition: all 0.2s;
+        }
+
+        .tag:hover {
+            border-color: var(--accent-border);
+            color: var(--accent);
+            background: var(--accent-dim);
+        }
+
+        /* ─── Featured Image ─── */
+        .featured-media {
+            margin: 3rem 0 5rem;
+            animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+        }
+
+        .media-frame {
+            position: relative;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+        }
+
+        .media-frame::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 60%, rgba(13, 13, 15, 0.4));
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .media-frame img,
+        .media-frame video {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .media-frame:hover img,
+        .media-frame:hover video {
+            transform: scale(1.02);
+        }
+
+        .media-caption {
+            margin-top: 0.85rem;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+
+        /* ─── Section Divider ─── */
+        .section-divider {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 3.5rem;
+        }
+
+        .section-divider-number {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--accent);
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        .section-divider-line {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .section-divider-label {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        /* ─── Content Section ─── */
+        .content-section {
+            padding: 5rem 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .content-header {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 4rem;
+            margin-bottom: 3rem;
+            align-items: start;
+        }
+
+        .section-meta {
+            padding-top: 0.4rem;
+        }
+
+        .section-number {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--accent);
+            letter-spacing: 2px;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+        }
+
+        .section-content h2 {
+            font-family: var(--font-display);
+            font-size: 2.2rem;
+            font-weight: 500;
+            margin-bottom: 1.25rem;
+            line-height: 1.2;
+        }
+
+        .section-content p {
+            font-size: 1rem;
+            line-height: 1.85;
+            color: var(--text-secondary);
+            max-width: 620px;
+        }
+
+        /* ─── Gallery Grid ─── */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            aspect-ratio: 4/3;
+            cursor: pointer;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+
+        .gallery-item:hover {
+            border-color: var(--accent-border);
+            transform: translateY(-3px);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.06);
+        }
+
+        /* ─── Video Container ─── */
+        .video-block {
+            margin-top: 2rem;
+        }
+
+        .video-label {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .video-label::before {
+            content: '▶';
+            color: var(--accent);
+            font-size: 0.6rem;
+        }
+
+        .video-frame {
+            position: relative;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            transition: border-color 0.3s;
+        }
+
+        .video-frame:hover {
+            border-color: var(--accent-border);
+        }
+
+        .video-frame video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* ─── Lessons Learned ─── */
+        .lessons-section {
+            padding: 5rem 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .lessons-header {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 4rem;
+            margin-bottom: 4rem;
+            align-items: start;
+        }
+
+        .lessons-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .lesson-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 2rem;
+            transition: border-color 0.3s, background 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lesson-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 0;
+            background: var(--accent);
+            transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .lesson-card:hover::before {
+            height: 100%;
+        }
+
+        .lesson-card:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-elevated);
+        }
+
+        .lesson-icon {
+            font-size: 1.4rem;
+            margin-bottom: 1.1rem;
+            display: block;
+        }
+
+        .lesson-title {
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+            color: var(--text);
+        }
+
+        .lesson-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.75;
+        }
+
+        /* ─── Footer ─── */
+        .footer-cta {
+            text-align: center;
+            padding: 5rem 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-cta p {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-cta h3 {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            font-weight: 500;
+            margin-bottom: 2.5rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 0.85rem 2rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-radius: 2px;
+            transition: all 0.25s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        .btn-primary:hover {
+            background: #d4ff70;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(200, 245, 97, 0.25);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-border);
+            color: var(--accent);
+        }
+
+        /* ─── Animations ─── */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ─── Responsive ─── */
+        @media (max-width: 768px) {
+
+            .content-header,
+            .lessons-header {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .lessons-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="container header-inner">
+            <a href="index.html" class="back-link">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                Back to Portfolio
+            </a>
+            <span class="header-label">Desktop Application · C# · SQL Server</span>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+
+            <!-- Hero -->
+            <section class="hero">
+                <div class="hero-glow"></div>
+                <div class="hero-eyebrow">Featured Project</div>
+                <h1>Driving Licenses<br><em>Management</em> System</h1>
+                <p class="project-subtitle">
+                    A full-featured desktop system for managing the complete lifecycle of driving licenses — from first
+                    application and exam workflow to renewals, replacements, and detain/release operations — built with
+                    a clean 3-tier architecture.
+                </p>
+                <div class="tags">
+                    <span class="tag">Desktop Application</span>
+                    <span class="tag">Windows Forms</span>
+                    <span class="tag">ReaLTaiizor UI</span>
+                    <span class="tag">3-Tier Architecture</span>
+                    <span class="tag">SQL Server (SSMS)</span>
+                    <span class="tag">C# OOP</span>
+                </div>
+            </section>
+
+            <!-- Featured Image -->
+            <div class="featured-media reveal">
+                <div class="media-frame">
+                    <img src="DVLD_Details/MainFormPicture.png" alt="DVLD Main Dashboard">
+                </div>
+                <p class="media-caption">// Main dashboard — application entry point</p>
+            </div>
+
+            <!-- Section 1: Authentication -->
+            <section class="content-section reveal">
+                <div class="content-header">
+                    <div class="section-meta">
+                        <span class="section-number">01 —</span>
+                        <span class="section-title-label">Authentication</span>
+                    </div>
+                    <div class="section-content">
+                        <h2>Secure Login & Access Control</h2>
+                        <p>
+                            The system enforces strict authentication before granting access. Failed login attempts,
+                            inactive accounts, and wrong credentials each produce distinct, informative feedback —
+                            ensuring security without ambiguity. A successful login routes the user directly to their
+                            authorized workspace.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="gallery-grid">
+                    <div class="gallery-item">
+                        <img src="DVLD_Details/FailedToLoginPicture.png" alt="Failed login attempt">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="DVLD_Details/LoginWithInactiveAccountPicture.png" alt="Inactive account warning">
+                    </div>
+                </div>
+
+                <div class="video-block" style="margin-top: 1.5rem;">
+                    <div class="video-label">Successful Login Flow</div>
+                    <div class="video-frame">
+                        <video controls>
+                            <source src="DVLD_Details/LoginSuccessfullyVideo.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: People Management -->
+            <section class="content-section reveal">
+                <div class="content-header">
+                    <div class="section-meta">
+                        <span class="section-number">02 —</span>
+                        <span class="section-title-label">People Management</span>
+                    </div>
+                    <div class="section-content">
+                        <h2>Managing Persons in the System</h2>
+                        <p>
+                            Every driver and applicant is registered as a "person" in the system before any license
+                            operations can take place. This module provides full CRUD capabilities — with advanced
+                            filtering to quickly locate records, and complete person profiles that serve as the
+                            foundation for all downstream license operations.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="video-block">
+                    <div class="video-label">Filter & Search People</div>
+                    <div class="video-frame">
+                        <video controls>
+                            <source src="DVLD_Details/PeopleFiltersVideo.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+                <div class="video-block">
+                    <div class="video-label">Add New Person</div>
+                    <div class="video-frame">
+                        <video controls>
+                            <source src="DVLD_Details/AddNewPersonVideo.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+                <div class="video-block">
+                    <div class="video-label">View Info, Edit & Delete Person</div>
+                    <div class="video-frame">
+                        <video controls>
+                            <source src="DVLD_Details/ManagePeopleVideo.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: System Users -->
+            <section class="content-section reveal">
+                <div class="content-header">
+                    <div class="section-meta">
+                        <span class="section-number">03 —</span>
+                        <span class="section-title-label">System Users</span>
+                    </div>
+                    <div class="section-content">
+                        <h2>User Account Administration</h2>
+                        <p>
+                            Administrators can create and manage system user accounts independently from the people
+                            registry. Each account can be activated or deactivated, have its password updated, or be
+                            removed entirely — giving full control over who has access to the system and at what level.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="video-block">
+                    <div class="video-label">Add New System User</div>
+                    <div class="video-frame">
+                        <video controls>
+                            <source src="DVLD_Details/AddNewSystemUserVideo.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+                <div class="video-block">
+                    <div class="video-label">Update Password · Activate/Deactivate · Delete</div>
+                    <div class="video-frame">
+                        <video controls>
+                            <source src="DVLD_Details/ManageSystemUsersVideo.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 4: Local License Application -->
+            <section class="content-section reveal">
+                <div class="content-header">
+                    <div class="section-meta">
+                        <span class="section-number">04 —</span>
+                        <span class="section-title-label">Local License</span>
+                    </div>
+                    <div class="section-content">
+                        <h2>Local Driving License Application</h2>
+                        <p>
+                            The core workflow of the system. An applicant submits a new license application, which then
+                            enters a structured three-stage exam process — Vision Test, Written Test, and Street Test.
+                            Each test can be scheduled, passed, failed, or retaken independently. Only after passing all
+                            three tests is the license issued, at which point the person is automatically registered as
+                            a driver.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="video-block">
+                    <div class="video-label">Submit New Local License Application</div>
+                    <div class="video-frame">
+                        <video controls>
+                            <source src="DVLD_Details/AddNewLocalLicenseApplicationVideo.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+                <div class="video-block">
+                    <div class="video-label">Schedule, Take & Retake Tests (Applies to All Three Stages)</div>
+                    <div class="video-frame">
+                        <video controls>
+                            <source src="DVLD_Details/ScheduleTestsVideo.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+                <div class="video-block">
+                    <div class="video-label">Issue License After Passing All Tests — Person Becomes a Driver</div>
+                    <div class="video-frame">
+                        <video controls>
+                            <source src="DVLD_Details/IssueLicenseForTheFirstTimeVideo.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 5: International License -->
+            <section class="content-section reveal">
+                <div class="content-header">
+                    <div class="section-meta">
+                        <span class="section-number">05 —</span>
+                        <span class="section-title-label">International License</span>
+                    </div>
+                    <div class="section-content">
+                        <h2>International Driving License</h2>
+                        <p>
+                            Drivers holding a valid local license can apply for an international driving license
+                            directly through the system. The process validates the existing local license, collects the
+                            required data, and issues the international license — with no need to repeat the exam
+                            process.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="video-block">
+                    <div class="video-label">Apply & Issue International License</div>
+                    <div class="video-frame">
+                        <video controls>
+                            <source src="DVLD_Details/AddNewInternationalLicenseVideo.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 6: Renew -->
+            <section class="content-section reveal">
+                <div class="content-header">
+                    <div class="section-meta">
+                        <span class="section-number">06 —</span>
+                        <span class="section-title-label">Renewal</span>
+                    </div>
+                    <div class="section-content">
+                        <h2>Renew Local Driving License</h2>
+                        <p>
+                            When a license reaches its expiry date, drivers can submit a renewal application through the
+                            system. The renewal process verifies the driver's existing record, generates a new license
+                            with an updated expiry date, and archives the old one — keeping the history intact and fully
+                            traceable.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="video-block">
+                    <div class="video-label">Renew Local License</div>
+                    <div class="video-frame">
+                        <video controls>
+                            <source src="DVLD_Details/RenewLocalDrivingLicenseVideo.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 7: Replace -->
+            <section class="content-section reveal">
+                <div class="content-header">
+                    <div class="section-meta">
+                        <span class="section-number">07 —</span>
+                        <span class="section-title-label">Replacement</span>
+                    </div>
+                    <div class="section-content">
+                        <h2>Replace a Lost or Damaged License</h2>
+                        <p>
+                            In cases of a lost or damaged license, drivers can apply for a replacement. The system
+                            records the reason for replacement, invalidates the old license, and issues a new one with
+                            the same class and expiry.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="video-block">
+                    <div class="video-label">Replace Local License</div>
+                    <div class="video-frame">
+                        <video controls>
+                            <source src="DVLD_Details/ReplaceLocalDrivingLicenseVideo.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 8: Detain & Release -->
+            <section class="content-section reveal">
+                <div class="content-header">
+                    <div class="section-meta">
+                        <span class="section-number">08 —</span>
+                        <span class="section-title-label">Detain & Release</span>
+                    </div>
+                    <div class="section-content">
+                        <h2>Detain & Release Driving Licenses</h2>
+                        <p>
+                            Authorities can detain an active license directly within the system, marking it as suspended
+                            with a recorded reason and date. When the detention period ends or the issue is resolved,
+                            the license can be formally released and restored to active status — with the full
+                            detain/release history preserved.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="video-block">
+                    <div class="video-label">Detain a License</div>
+                    <div class="video-frame">
+                        <video controls>
+                            <source src="DVLD_Details/DetainLicenseVideo.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+                <div class="video-block">
+                    <div class="video-label">Release a Detained License</div>
+                    <div class="video-frame">
+                        <video controls>
+                            <source src="DVLD_Details/ReleaseDetainedLocalDrivingLicenseVideo.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Lessons Learned -->
+            <section class="lessons-section reveal">
+                <div class="lessons-header">
+                    <div class="section-meta">
+                        <span class="section-number">↗ —</span>
+                        <span class="section-title-label">Reflection</span>
+                    </div>
+                    <div class="section-content">
+                        <h2>Lessons Learned</h2>
+                        <p>
+                            This project was a significant step in maturing as a developer. It pushed me beyond syntax
+                            and tutorials into the territory of real software design — where decisions about
+                            architecture, data flow, and business rules have lasting consequences.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="lessons-grid">
+                    <div class="lesson-card">
+                        <span class="lesson-icon">🏗️</span>
+                        <div class="lesson-title">Mastering 3-Tier Architecture</div>
+                        <p class="lesson-desc">
+                            Separating the project into three distinct layers — UI, Business Logic (BLL), and Data
+                            Access (DAL) — taught me the real value of decoupling. Each layer could be modified
+                            independently, and the codebase became far easier to maintain and scale as complexity grew.
+                        </p>
+                    </div>
+                    <div class="lesson-card">
+                        <span class="lesson-icon">⚙️</span>
+                        <div class="lesson-title">Modeling Real-World Workflows</div>
+                        <p class="lesson-desc">
+                            Translating complex, multi-step processes — like the three-stage exam workflow with pass,
+                            fail, and retake states — into clean, predictable code taught me how to think in terms of
+                            states, transitions, and business rules rather than just functions.
+                        </p>
+                    </div>
+                    <div class="lesson-card">
+                        <span class="lesson-icon">🧱</span>
+                        <div class="lesson-title">Applying OOP Principles in Practice</div>
+                        <p class="lesson-desc">
+                            This wasn't OOP on paper — it was OOP under pressure. Designing classes that properly
+                            encapsulate behavior, using inheritance where it made sense, and keeping responsibilities
+                            focused helped me internalize what clean object-oriented design actually looks like in a
+                            real system.
+                        </p>
+                    </div>
+                    <div class="lesson-card">
+                        <span class="lesson-icon">📐</span>
+                        <div class="lesson-title">Enforcing Business Rules at the Right Layer</div>
+                        <p class="lesson-desc">
+                            I learned that business rules don't belong in the UI. Validation logic, constraint checks,
+                            and domain rules live in the BLL — not in button click handlers. This kept the UI thin, the
+                            logic testable, and the codebase honest about where decisions are made.
+                        </p>
+                    </div>
+                    <div class="lesson-card">
+                        <span class="lesson-icon">🗄️</span>
+                        <div class="lesson-title">Thinking in Data, Not Just Forms</div>
+                        <p class="lesson-desc">
+                            Designing the database schema to reflect relationships between people, drivers, licenses,
+                            applications, and tests gave me a much deeper understanding of relational data modeling —
+                            and how a well-structured schema makes the whole application easier to reason about.
+                        </p>
+                    </div>
+                    <div class="lesson-card">
+                        <span class="lesson-icon">🔁</span>
+                        <div class="lesson-title">Managing Complexity Through Consistency</div>
+                        <p class="lesson-desc">
+                            With 8+ distinct modules sharing overlapping logic, I learned to recognize patterns and
+                            build reusable components rather than duplicating code. Consistency in naming, structure,
+                            and flow across modules turned a complex system into something navigable and coherent.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="footer-cta">
+        <div class="container">
+            <p>Like what you see?</p>
+            <h3>Let's work together</h3>
+            <div class="cta-buttons">
+                <a href="https://github.com/deemah-dev/DVLD" class="btn btn-primary">View GitHub</a>
+                <a href="index.html" class="btn btn-secondary">Back to Portfolio</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll reveal
+        const reveals = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.08, rootMargin: '0px 0px -60px 0px' });
+
+        reveals.forEach(el => observer.observe(el));
+    </script>
+
+</body>
+
+</html>
