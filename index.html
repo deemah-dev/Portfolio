@@ -933,7 +933,7 @@
         <div class="hero-bg-glow"></div>
         <div class="hero-bg-glow-2"></div>
         <div class="hero-content">
-            <div class="hero-eyebrow">Back-end Developer</div>
+            <div class="hero-eyebrow">Full Stack Desktop Developer</div>
             <h1>Hi, I'm<br><em>Dima Musallam</em></h1>
             <p class="hero-subtitle">Building robust systems · Clean architecture · Real-world solutions</p>
             <div class="hero-buttons">
@@ -956,7 +956,7 @@
                 <h2 class="section-title">About Me</h2>
                 <div class="about-grid">
                     <div class="about-text">
-                        <p>As a Backend Developer, I specialize in transforming complex business requirements
+                        <p>As a Full Stack Desktop Developer, I specialize in transforming complex business requirements
                             into scalable system architectures. My approach focuses on bridging the gap between robust
                             backend logic and high-performance database design, ensuring both data integrity and
                             operational efficiency.</p>
@@ -995,11 +995,11 @@
                             <h3>Database</h3>
                             <p>SQL Server, SSMS, Database Design, Stored Procedures</p>
                         </div>
-                        <!-- <div class="skill-card">
+                        <div class="skill-card">
                             <span class="skill-icon">🖥️</span>
                             <h3>Desktop Development</h3>
                             <p>WPF, MVVM Pattern, Data Binding</p>
-                        </div> -->
+                        </div>
                         <div class="skill-card">
                             <span class="skill-icon">🏗️</span>
                             <h3>Architecture</h3>
@@ -1028,11 +1028,11 @@
                 <h2 class="section-title">My Projects</h2>
                 <div class="projects-grid">
                     <div class="project-card">
-                        <div class="project-visual">📚</div>
+                        <div class="project-visual">🏥</div>
                         <div class="project-body">
                             <h3>Books Management API</h3>
                             <p>Simple System For Managing Books, Categories, Book borrowing/returning</p>
-                            <p class="project-tech">ASP.NET Core · RESTful API · SQL Server</p>
+                            <p class="project-tech">ASP.NET Core · RESTful API · WPF · MVVM · SQL Server</p>
                             <div class="project-buttons" style="margin-top: 1.25rem;">
                                 <a href="https://github.com/deemah-dev/Books_MS_API" class="project-btn github-btn"
                                     target="_blank">
@@ -1074,33 +1074,19 @@
                         <h2 class="section-title" style="margin-bottom: 1rem;">Curriculum Vitae</h2>
                         <p>Download my CV to get a full overview of my education, experience, and technical skills. You
                             can also preview it directly in the browser.</p>
-                        <div id="cvActions">
-                            <a id="cvDownloadBtn" href="#" class="btn btn-primary"
-                                style="display: none; margin-bottom: 0.75rem;">
-                                <i class="fas fa-download"></i> Download CV
-                            </a>
-                        </div>
-
-                        <!-- Upload area (shows until PDF is loaded) -->
-                        <div class="cv-upload-area" id="cvUploadArea">
-                            <div style="font-size: 2rem; margin-bottom: 0.75rem;">📄</div>
-                            <p>Drop your CV PDF here</p>
-                            <label for="cvFileInput">or click to browse</label>
-                            <input type="file" id="cvFileInput" accept=".pdf">
-                        </div>
-                        <p
-                            style="font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-muted); letter-spacing: 0.5px;">
-                            * Upload your PDF CV to enable preview & download. File stays local — not uploaded anywhere.
-                        </p>
+                        <!-- ╔══════════════════════════════════════════════╗
+                             ║  غيري "cv.pdf" لاسم ملفك (بنفس المجلد)     ║
+                             ╚══════════════════════════════════════════════╝ -->
+                        <a href="cv.pdf" download class="btn btn-primary">
+                            <i class="fas fa-download"></i> Download CV
+                        </a>
                     </div>
 
-                    <div class="cv-preview" id="cvPreviewFrame">
-                        <div class="cv-placeholder" id="cvPlaceholder">
-                            <div class="cv-placeholder-icon">📋</div>
-                            <p>CV PREVIEW</p>
-                            <p style="margin-top: 0.5rem; opacity: 0.6;">Upload a PDF to preview here</p>
-                        </div>
-                        <!-- iframe injected by JS -->
+                    <div class="cv-preview">
+                        <!-- ╔══════════════════════════════════════════════╗
+                             ║  نفس اسم الملف هون أيضاً                    ║
+                             ╚══════════════════════════════════════════════╝ -->
+                        <iframe src="cv.pdf" title="Dima Musallam — CV"></iframe>
                     </div>
                 </div>
             </section>
@@ -1110,20 +1096,30 @@
                 <div class="section-label">Say Hello</div>
                 <h2 class="section-title">Get In Touch</h2>
                 <div class="contact-wrap">
-                    <form id="contactForm">
+                    <!-- ╔══════════════════════════════════════════════════════════════════╗
+                         ║  خطوات تفعيل الإيميل:                                           ║
+                         ║  1. روحي على formspree.io وسجلي حساب مجاني                     ║
+                         ║  2. اعملي "New Form" واختاري إيميلك                             ║
+                         ║  3. انسخي الـ endpoint وحطيه مكان YOUR_FORM_ID هون             ║
+                         ║     مثال: https://formspree.io/f/xpwzabcd                       ║
+                         ╚══════════════════════════════════════════════════════════════════╝ -->
+                    <form id="contactForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
                         <div class="form-group">
-                            <input type="text" placeholder="Your Name" required>
+                            <input type="text" name="name" placeholder="Your Name" required>
                         </div>
                         <div class="form-group">
-                            <input type="email" placeholder="Your Email" required>
+                            <input type="email" name="email" placeholder="Your Email" required>
                         </div>
                         <div class="form-group">
-                            <textarea placeholder="Your Message" required></textarea>
+                            <textarea name="message" placeholder="Your Message" required></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary"
                             style="width: 100%; justify-content: center; padding: 1rem;">
                             <i class="fas fa-paper-plane"></i> Send Message
                         </button>
+                        <p id="formStatus"
+                            style="display:none; text-align:center; margin-top:1rem; font-family:'IBM Plex Mono',monospace; font-size:0.78rem; color:var(--accent);">
+                        </p>
                     </form>
                 </div>
             </section>
@@ -1144,7 +1140,7 @@
                 <a href="https://leetcode.com/u/deemah-dev" title="LeetCode" target="_blank">
                     <i class="fas fa-brain"></i>
                 </a>
-                <a href="mailto:dima001161100@gmail.com" title="Email">
+                <a href="/cdn-cgi/l/email-protection#5a3e33373b6a6a6b6b6c6b6b6a6a1a3d373b333674393537" title="Email">
                     <i class="fas fa-envelope"></i>
                 </a>
             </div>
@@ -1152,6 +1148,7 @@
         </div>
     </footer>
 
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
     <script>
         // ─── Theme Toggle ───
         const html = document.documentElement;
@@ -1203,63 +1200,36 @@
 
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-        // ─── CV Upload ───
-        const cvFileInput = document.getElementById('cvFileInput');
-        const cvUploadArea = document.getElementById('cvUploadArea');
-        const cvPreviewFrame = document.getElementById('cvPreviewFrame');
-        const cvPlaceholder = document.getElementById('cvPlaceholder');
-        const cvDownloadBtn = document.getElementById('cvDownloadBtn');
+        // ─── Contact Form (Formspree) ───
+        const contactForm = document.getElementById('contactForm');
+        const formStatus = document.getElementById('formStatus');
 
-        function loadCV(file) {
-            if (!file || file.type !== 'application/pdf') return;
-            const url = URL.createObjectURL(file);
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = contactForm.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
 
-            // Remove placeholder
-            cvPlaceholder.style.display = 'none';
-
-            // Inject iframe
-            let iframe = cvPreviewFrame.querySelector('iframe');
-            if (!iframe) {
-                iframe = document.createElement('iframe');
-                cvPreviewFrame.appendChild(iframe);
+            try {
+                const res = await fetch(contactForm.action, {
+                    method: 'POST',
+                    body: new FormData(contactForm),
+                    headers: { 'Accept': 'application/json' }
+                });
+                if (res.ok) {
+                    formStatus.style.display = 'block';
+                    formStatus.style.color = 'var(--accent)';
+                    formStatus.textContent = '✓ Message sent! I\'ll get back to you soon.';
+                    contactForm.reset();
+                } else {
+                    throw new Error();
+                }
+            } catch {
+                formStatus.style.display = 'block';
+                formStatus.style.color = '#ff6b6b';
+                formStatus.textContent = '✗ Something went wrong. Try emailing me directly.';
             }
-            iframe.src = url;
-            cvPreviewFrame.style.minHeight = 'unset';
 
-            // Show download button
-            cvDownloadBtn.href = url;
-            cvDownloadBtn.download = file.name;
-            cvDownloadBtn.style.display = 'inline-flex';
-
-            // Hide upload area
-            cvUploadArea.style.display = 'none';
-        }
-
-        cvFileInput.addEventListener('change', (e) => {
-            if (e.target.files[0]) loadCV(e.target.files[0]);
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
         });
-
-        // Drag & drop
-        cvUploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            cvUploadArea.classList.add('drag-over');
-        });
-        cvUploadArea.addEventListener('dragleave', () => cvUploadArea.classList.remove('drag-over'));
-        cvUploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            cvUploadArea.classList.remove('drag-over');
-            if (e.dataTransfer.files[0]) loadCV(e.dataTransfer.files[0]);
-        });
-        cvUploadArea.addEventListener('click', () => cvFileInput.click());
-
-        // ─── Contact Form ───
-        document.getElementById('contactForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert('Thank you for your message! I will get back to you soon.');
-            e.target.reset();
-        });
-    </script>
-
-</body>
-
-</html>
