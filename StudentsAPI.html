@@ -11,7 +11,6 @@
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,700&family=Syne:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-
     <style>
         :root {
             --bg: #0d0d0f;
@@ -47,7 +46,6 @@
             overflow-x: hidden;
         }
 
-        /* Noise overlay */
         body::after {
             content: '';
             position: fixed;
@@ -64,7 +62,6 @@
             padding: 0 2rem;
         }
 
-        /* ─── Header ─── */
         header {
             padding: 1.75rem 0;
             border-bottom: 1px solid var(--border);
@@ -113,7 +110,6 @@
             letter-spacing: 1px;
         }
 
-        /* ─── Hero ─── */
         .hero {
             padding: 6rem 0 4rem;
             position: relative;
@@ -207,7 +203,6 @@
             background: var(--accent-dim);
         }
 
-        /* ─── Swagger Image Block ─── */
         .featured-media {
             margin: 3.5rem 0 5rem;
             animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
@@ -230,49 +225,6 @@
             pointer-events: none;
         }
 
-        /* ↓↓↓ Swagger image placeholder ↓↓↓ */
-        .swagger-placeholder {
-            width: 100%;
-            min-height: 420px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            background: var(--bg-elevated);
-            border: 2px dashed var(--border);
-            border-radius: 6px;
-            cursor: pointer;
-            transition: border-color 0.3s, background 0.3s;
-            padding: 3rem;
-            text-align: center;
-        }
-
-        .swagger-placeholder:hover {
-            border-color: var(--accent-border);
-            background: var(--accent-dim);
-        }
-
-        .swagger-placeholder .ph-icon {
-            font-size: 3rem;
-            opacity: 0.35;
-        }
-
-        .swagger-placeholder p {
-            font-family: var(--font-mono);
-            font-size: 0.78rem;
-            color: var(--text-muted);
-            letter-spacing: 1px;
-            line-height: 1.7;
-        }
-
-        .swagger-placeholder .ph-hint {
-            font-size: 0.68rem;
-            color: var(--accent);
-            opacity: 0.7;
-        }
-
-        /* When image is loaded */
         .media-frame img {
             width: 100%;
             height: auto;
@@ -293,7 +245,6 @@
             text-align: center;
         }
 
-        /* ─── Content Sections ─── */
         .content-section {
             padding: 5rem 0;
             border-top: 1px solid var(--border);
@@ -348,7 +299,7 @@
             margin-bottom: 0;
         }
 
-        /* ─── Architecture Diagram ─── */
+        /* Architecture */
         .arch-diagram {
             margin-top: 2.5rem;
             display: flex;
@@ -417,7 +368,66 @@
             margin-left: 1.5rem;
         }
 
-        /* ─── Feature Cards ─── */
+        /* Middleware pipeline */
+        .pipeline {
+            margin-top: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            max-width: 560px;
+        }
+
+        .pipeline-step {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.85rem 1.4rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            position: relative;
+            transition: border-color 0.3s, background 0.3s;
+        }
+
+        .pipeline-step:first-child {
+            border-radius: 4px 4px 0 0;
+        }
+
+        .pipeline-step:last-child {
+            border-radius: 0 0 4px 4px;
+        }
+
+        .pipeline-step:not(:last-child) {
+            border-bottom: none;
+        }
+
+        .pipeline-step:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-elevated);
+            z-index: 1;
+        }
+
+        .pipeline-num {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--accent);
+            opacity: 0.6;
+            min-width: 22px;
+        }
+
+        .pipeline-name {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            color: var(--accent);
+            font-weight: 500;
+            min-width: 200px;
+        }
+
+        .pipeline-desc {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        /* Feature cards */
         .features-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -475,7 +485,44 @@
             line-height: 1.75;
         }
 
-        /* ─── Tech Stack Pills ─── */
+        /* NEW: Security badge */
+        .security-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.3rem 0.75rem;
+            background: var(--accent-dim);
+            border: 1px solid var(--accent-border);
+            border-radius: 2px;
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--accent);
+            letter-spacing: 1px;
+            margin-bottom: 2rem;
+        }
+
+        .security-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        /* Tech stack */
         .tech-grid {
             display: flex;
             flex-wrap: wrap;
@@ -514,7 +561,7 @@
             padding-left: 0.6rem;
         }
 
-        /* ─── Roadmap ─── */
+        /* Roadmap */
         .roadmap-list {
             display: flex;
             flex-direction: column;
@@ -564,7 +611,7 @@
             line-height: 1.6;
         }
 
-        /* ─── Lessons Learned ─── */
+        /* Lessons */
         .lessons-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -622,7 +669,7 @@
             line-height: 1.75;
         }
 
-        /* ─── Footer CTA ─── */
+        /* Footer */
         .footer-cta {
             text-align: center;
             padding: 5rem 0;
@@ -688,7 +735,6 @@
             color: var(--accent);
         }
 
-        /* ─── Animations ─── */
         @keyframes fadeUp {
             from {
                 opacity: 0;
@@ -712,7 +758,6 @@
             transform: translateY(0);
         }
 
-        /* ─── Responsive ─── */
         @media (max-width: 768px) {
             .content-header {
                 grid-template-columns: 1fr;
@@ -745,7 +790,7 @@
                 </svg>
                 Back to Portfolio
             </a>
-            <span class="header-label">Web API · C# · ASP.NET Core · xUnit</span>
+            <span class="header-label">Web API · C# · ASP.NET Core · JWT · xUnit</span>
         </div>
     </header>
 
@@ -760,13 +805,17 @@
                 <h1>Student Management<br><em>API</em></h1>
                 <p class="project-subtitle">
                     A robust ASP.NET Core Web API built as a learning project to demonstrate the transition from a
-                    traditional N-Tier architecture to a more modern, testable, and decoupled design — with a strong
-                    focus on Separation of Concerns and clean code principles.
+                    traditional N-Tier architecture to a more modern, testable, and decoupled design — now extended
+                    with JWT authentication, role-based access control, rate limiting, and CORS policies.
                 </p>
                 <div class="tags">
                     <span class="tag">ASP.NET Core</span>
                     <span class="tag">Web API</span>
                     <span class="tag">N-Tier Architecture</span>
+                    <span class="tag">JWT Auth</span>
+                    <span class="tag">RBAC</span>
+                    <span class="tag">Rate Limiting</span>
+                    <span class="tag">CORS</span>
                     <span class="tag">Dependency Injection</span>
                     <span class="tag">xUnit · Moq</span>
                     <span class="tag">SQL Server</span>
@@ -776,8 +825,20 @@
 
             <!-- Swagger Screenshot -->
             <div class="featured-media reveal">
-                <img src="StudentsAPI_Details/StudentsAPISwaggerImage.png" alt="Swagger UI" width="1000" height="600">
-                <p class="media-caption">// Swagger UI — interactive API documentation</p>
+                <div class="media-frame">
+                    <img src="StudentsAPI_Details/StudentsAPISwaggerAuthImage.png" alt="Swagger UI" width="1000"
+                        height="600">
+                </div>
+                <p class="media-caption">// Swagger UI — interactive API documentation with JWT Bearer authentication
+                </p>
+            </div>
+            <div class="featured-media reveal">
+                <div class="media-frame">
+                    <img src="StudentsAPI_Details/StudentsAPISwaggerStudentsCRUDImage.png" alt="Swagger UI" width="1000"
+                        height="600">
+                </div>
+                <p class="media-caption">// Swagger UI — interactive API documentation
+                </p>
             </div>
 
             <!-- Section 1: Architecture -->
@@ -807,13 +868,13 @@
                     <div class="arch-layer">
                         <span class="arch-layer-icon">⚙️</span>
                         <span class="arch-layer-name">StudentAPI.BLL</span>
-                        <span class="arch-layer-desc">Business Logic — Services</span>
+                        <span class="arch-layer-desc">Business Logic — Services (Student, Auth, Role)</span>
                     </div>
                     <div class="arch-arrow">↕</div>
                     <div class="arch-layer">
                         <span class="arch-layer-icon">🗄️</span>
                         <span class="arch-layer-name">StudentAPI.DAL</span>
-                        <span class="arch-layer-desc">Data Access — Repositories</span>
+                        <span class="arch-layer-desc">Data Access — Repositories (Student, User, Role)</span>
                     </div>
                     <div class="arch-arrow">↕</div>
                     <div class="arch-layer">
@@ -824,11 +885,62 @@
                 </div>
             </section>
 
-            <!-- Section 2: Key Features -->
+            <!-- Section 2: Middleware Pipeline -->
             <section class="content-section reveal">
                 <div class="content-header">
                     <div class="section-meta">
                         <span class="section-number">02 —</span>
+                        <span class="section-title-label">Middleware Pipeline</span>
+                    </div>
+                    <div class="section-content">
+                        <h2>Ordered Middleware Pipeline</h2>
+                        <p>
+                            Order matters in ASP.NET Core middleware. The pipeline is carefully sequenced so that
+                            rate limiting protects against abuse before authentication runs, and authentication
+                            resolves identity before authorization enforces permissions.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="pipeline">
+                    <div class="pipeline-step">
+                        <span class="pipeline-num">01</span>
+                        <span class="pipeline-name">HTTPS Redirection</span>
+                        <span class="pipeline-desc">Enforce secure transport</span>
+                    </div>
+                    <div class="pipeline-step">
+                        <span class="pipeline-num">02</span>
+                        <span class="pipeline-name">Rate Limiter</span>
+                        <span class="pipeline-desc">Block abuse before hitting auth logic</span>
+                    </div>
+                    <div class="pipeline-step">
+                        <span class="pipeline-num">03</span>
+                        <span class="pipeline-name">429 Response Writer</span>
+                        <span class="pipeline-desc">Friendly message on rate limit hit</span>
+                    </div>
+                    <div class="pipeline-step">
+                        <span class="pipeline-num">04</span>
+                        <span class="pipeline-name">Authentication</span>
+                        <span class="pipeline-desc">Resolve JWT identity from Bearer token</span>
+                    </div>
+                    <div class="pipeline-step">
+                        <span class="pipeline-num">05</span>
+                        <span class="pipeline-name">Authorization</span>
+                        <span class="pipeline-desc">Enforce role-based access (Admin / Student)</span>
+                    </div>
+                    <div class="pipeline-step">
+                        <span class="pipeline-num">06</span>
+                        <span class="pipeline-name">MapControllers</span>
+                        <span class="pipeline-desc">Route requests to endpoint handlers</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Key Features -->
+            <section class="content-section reveal">
+                <div class="content-header">
+                    <div class="section-meta">
+                        <span class="section-number">03 —</span>
                         <span class="section-title-label">Key Features</span>
                     </div>
                     <div class="section-content">
@@ -836,12 +948,47 @@
                         <p>
                             Every feature in this project was chosen deliberately — not just to make things work,
                             but to understand the reasoning behind each architectural decision and its impact on
-                            long-term maintainability.
+                            long-term maintainability and security.
                         </p>
+                        <div class="security-badge">SECURITY LAYER ADDED</div>
                     </div>
                 </div>
 
                 <div class="features-grid">
+                    <div class="feature-card">
+                        <span class="feature-icon">🔐</span>
+                        <div class="feature-title">JWT Authentication</div>
+                        <p class="feature-desc">
+                            Stateless authentication via signed JWT access tokens (10-min expiry) paired with
+                            hashed refresh tokens. Tokens are validated on every request against issuer,
+                            audience, lifetime, and signing key.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">🛡️</span>
+                        <div class="feature-title">Role-Based Access Control</div>
+                        <p class="feature-desc">
+                            Admin and Student roles enforced at the endpoint level via <code>[Authorize(Roles)]</code>.
+                            Students can only access their own data — cross-user access returns 403 Forbidden.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">🚦</span>
+                        <div class="feature-title">Rate Limiting</div>
+                        <p class="feature-desc">
+                            Fixed-window rate limiting on auth endpoints (5 requests/min per IP).
+                            Returns HTTP 429 with a human-readable message, protecting against brute-force
+                            login attacks without blocking legitimate users.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">🌍</span>
+                        <div class="feature-title">CORS Policy</div>
+                        <p class="feature-desc">
+                            Explicit CORS configuration allowing only trusted origins. Prevents unauthorized
+                            cross-origin requests while keeping the API accessible to its intended clients.
+                        </p>
+                    </div>
                     <div class="feature-card">
                         <span class="feature-icon">🔌</span>
                         <div class="feature-title">Dependency Injection</div>
@@ -854,8 +1001,8 @@
                         <span class="feature-icon">🏛️</span>
                         <div class="feature-title">Repository Pattern</div>
                         <p class="feature-desc">
-                            Data access is fully abstracted behind repository interfaces, making the system
-                            database-agnostic and shielding the business layer from persistence details.
+                            Data access is fully abstracted behind repository interfaces — now covering Students,
+                            Users, and Roles — making the system database-agnostic and easy to test.
                         </p>
                     </div>
                     <div class="feature-card">
@@ -876,27 +1023,28 @@
                     </div>
                     <div class="feature-card">
                         <span class="feature-icon">📖</span>
-                        <div class="feature-title">Swagger</div>
+                        <div class="feature-title">Swagger + JWT Support</div>
                         <p class="feature-desc">
-                            Interactive API documentation auto-generated from code, allowing full endpoint
-                            exploration and testing directly in the browser without any extra tooling.
+                            Interactive API documentation auto-generated from code, now with a Bearer token
+                            input so authenticated endpoints can be tested directly in the browser.
                         </p>
                     </div>
                 </div>
             </section>
 
-            <!-- Section 3: Tech Stack -->
+            <!-- Section 4: Tech Stack -->
             <section class="content-section reveal">
                 <div class="content-header">
                     <div class="section-meta">
-                        <span class="section-number">03 —</span>
+                        <span class="section-number">04 —</span>
                         <span class="section-title-label">Tech Stack</span>
                     </div>
                     <div class="section-content">
                         <h2>Tools & Technologies</h2>
                         <p>
                             The stack was chosen to reflect real-world backend development in the .NET ecosystem —
-                            covering the full lifecycle from API design to data persistence and automated testing.
+                            covering the full lifecycle from API design to security, data persistence, and automated
+                            testing.
                         </p>
                     </div>
                 </div>
@@ -911,6 +1059,22 @@
                         <span class="tech-pill-category">Language</span>
                     </div>
                     <div class="tech-pill">
+                        <span class="tech-pill-label">JWT / JwtBearer</span>
+                        <span class="tech-pill-category">Authentication</span>
+                    </div>
+                    <div class="tech-pill">
+                        <span class="tech-pill-label">BCrypt.Net</span>
+                        <span class="tech-pill-category">Password Hashing</span>
+                    </div>
+                    <div class="tech-pill">
+                        <span class="tech-pill-label">Rate Limiter</span>
+                        <span class="tech-pill-category">Security</span>
+                    </div>
+                    <div class="tech-pill">
+                        <span class="tech-pill-label">CORS</span>
+                        <span class="tech-pill-category">Security</span>
+                    </div>
+                    <div class="tech-pill">
                         <span class="tech-pill-label">SQL Server</span>
                         <span class="tech-pill-category">Database</span>
                     </div>
@@ -923,7 +1087,7 @@
                         <span class="tech-pill-category">Mocking</span>
                     </div>
                     <div class="tech-pill">
-                        <span class="tech-pill-label">Swagger</span>
+                        <span class="tech-pill-label">Swagger / OpenAPI</span>
                         <span class="tech-pill-category">Documentation</span>
                     </div>
                     <div class="tech-pill">
@@ -933,11 +1097,11 @@
                 </div>
             </section>
 
-            <!-- Section 4: Roadmap -->
+            <!-- Section 5: Roadmap -->
             <section class="content-section reveal">
                 <div class="content-header">
                     <div class="section-meta">
-                        <span class="section-number">04 —</span>
+                        <span class="section-number">05 —</span>
                         <span class="section-title-label">Roadmap</span>
                     </div>
                     <div class="section-content">
@@ -950,6 +1114,42 @@
                 </div>
 
                 <div class="roadmap-list">
+                    <div class="roadmap-item">
+                        <div class="roadmap-check">
+                            <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" />
+                            </svg>
+                        </div>
+                        <span class="roadmap-text">JWT authentication with access & refresh token rotation</span>
+                    </div>
+                    <div class="roadmap-item">
+                        <div class="roadmap-check">
+                            <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" />
+                            </svg>
+                        </div>
+                        <span class="roadmap-text">Role-based access control (Admin / Student)</span>
+                    </div>
+                    <div class="roadmap-item">
+                        <div class="roadmap-check">
+                            <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" />
+                            </svg>
+                        </div>
+                        <span class="roadmap-text">Rate limiting on auth endpoints (fixed-window, per-IP)</span>
+                    </div>
+                    <div class="roadmap-item">
+                        <div class="roadmap-check">
+                            <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" />
+                            </svg>
+                        </div>
+                        <span class="roadmap-text">CORS policy with origin whitelisting</span>
+                    </div>
                     <div class="roadmap-item">
                         <div class="roadmap-check">
                             <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"
@@ -1017,6 +1217,15 @@
                         </p>
                     </div>
                     <div class="lesson-card">
+                        <span class="lesson-icon">🔐</span>
+                        <div class="lesson-title">Security Is a Layer, Not an Afterthought</div>
+                        <p class="lesson-desc">
+                            Adding JWT, RBAC, and rate limiting taught me that security decisions cascade through
+                            every layer. Choosing where to validate identity — middleware vs. controller — shapes
+                            the entire design.
+                        </p>
+                    </div>
+                    <div class="lesson-card">
                         <span class="lesson-icon">🧱</span>
                         <div class="lesson-title">Static Classes Are a Trap</div>
                         <p class="lesson-desc">
@@ -1032,6 +1241,15 @@
                             Separating API contracts from database entities isn't just about security — it's about
                             owning your design. When the database schema changed, the API stayed stable.
                             That's the power of the DTO boundary.
+                        </p>
+                    </div>
+                    <div class="lesson-card">
+                        <span class="lesson-icon">🚦</span>
+                        <div class="lesson-title">Middleware Order Is a Design Decision</div>
+                        <p class="lesson-desc">
+                            Learning that rate limiting must precede authentication — not follow it — made the
+                            request pipeline feel like deliberate architecture rather than a configuration file.
+                            Order is semantics.
                         </p>
                     </div>
                     <div class="lesson-card">
@@ -1090,7 +1308,6 @@
                 }
             });
         }, { threshold: 0.07, rootMargin: '0px 0px -50px 0px' });
-
         reveals.forEach(el => observer.observe(el));
     </script>
 
