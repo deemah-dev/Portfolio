@@ -1,0 +1,2145 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management System API — Dima Musallam</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,700&family=Syne:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+        /* ─── CSS Variables ─── */
+        :root {
+            --transition-theme: background 0.45s ease, color 0.45s ease, border-color 0.45s ease, box-shadow 0.45s ease;
+        }
+
+        [data-theme="dark"] {
+            --bg: #0d0d0f;
+            --bg-card: #131316;
+            --bg-elevated: #1a1a1f;
+            --bg-nav: rgba(13, 13, 15, 0.88);
+            --accent: #c8f561;
+            --accent-rgb: 200, 245, 97;
+            --accent-dim: rgba(200, 245, 97, 0.08);
+            --accent-border: rgba(200, 245, 97, 0.28);
+            --text: #f0ede8;
+            --text-muted: #7a7880;
+            --text-secondary: #b0adb8;
+            --border: rgba(255, 255, 255, 0.07);
+            --border-solid: #222228;
+            --shadow: rgba(0, 0, 0, 0.5);
+            --logo-color: #c8f561;
+            --noise-opacity: 0.04;
+            --code-bg: #0a0a0c;
+        }
+
+        [data-theme="light"] {
+            --bg: #f5f4f0;
+            --bg-card: #ffffff;
+            --bg-elevated: #eeece8;
+            --bg-nav: rgba(245, 244, 240, 0.92);
+            --accent: #5a4fcf;
+            --accent-rgb: 90, 79, 207;
+            --accent-dim: rgba(90, 79, 207, 0.08);
+            --accent-border: rgba(90, 79, 207, 0.3);
+            --text: #1a1a22;
+            --text-muted: #8a8890;
+            --text-secondary: #555562;
+            --border: rgba(0, 0, 0, 0.08);
+            --border-solid: #dddad4;
+            --shadow: rgba(0, 0, 0, 0.12);
+            --logo-color: #5a4fcf;
+            --noise-opacity: 0.02;
+            --code-bg: #f0ede8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Syne', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: var(--transition-theme);
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            opacity: var(--noise-opacity);
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* ─── Nav ─── */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: var(--bg-nav);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            transition: var(--transition-theme), box-shadow 0.3s;
+        }
+
+        nav.scrolled {
+            box-shadow: 0 4px 30px var(--shadow);
+        }
+
+        .nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--accent);
+        }
+
+        .back-link svg {
+            transition: transform 0.2s;
+        }
+
+        .back-link:hover svg {
+            transform: translateX(-3px);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .header-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        .theme-toggle {
+            width: 44px;
+            height: 24px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-solid);
+            border-radius: 12px;
+            cursor: pointer;
+            position: relative;
+            transition: var(--transition-theme);
+            flex-shrink: 0;
+        }
+
+        .theme-toggle::before {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--accent);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s;
+        }
+
+        [data-theme="light"] .theme-toggle::before {
+            transform: translateX(20px);
+        }
+
+        .theme-icon {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.55rem;
+            pointer-events: none;
+        }
+
+        .theme-icon.moon {
+            left: 5px;
+            color: var(--text-muted);
+        }
+
+        .theme-icon.sun {
+            right: 5px;
+            color: var(--text-muted);
+        }
+
+        /* ─── Hero ─── */
+        .hero {
+            padding: 9rem 0 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-glow {
+            position: absolute;
+            top: -20%;
+            right: -5%;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(var(--accent-rgb), 0.06) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+        .hero-glow-left {
+            position: absolute;
+            bottom: -15%;
+            left: -8%;
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(var(--accent-rgb), 0.03) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+        .hero-eyebrow {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--accent);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            opacity: 0;
+            animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+        }
+
+        .hero-eyebrow::before {
+            content: '';
+            display: inline-block;
+            width: 28px;
+            height: 1px;
+            background: var(--accent);
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.8rem, 6vw, 5rem);
+            font-weight: 700;
+            line-height: 1.08;
+            letter-spacing: -0.025em;
+            margin-bottom: 1.5rem;
+            max-width: 800px;
+            opacity: 0;
+            animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+        }
+
+        .hero h1 em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .project-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            max-width: 640px;
+            line-height: 1.85;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+        }
+
+        .tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+        }
+
+        .tag {
+            padding: 0.35rem 0.8rem;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+            border-radius: 2px;
+            transition: all 0.2s;
+        }
+
+        .tag:hover {
+            border-color: var(--accent-border);
+            color: var(--accent);
+            background: var(--accent-dim);
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+        }
+
+        /* ─── Stats Bar ─── */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background: var(--border-solid);
+            border: 1px solid var(--border-solid);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 4rem 0;
+        }
+
+        .stat-item {
+            background: var(--bg-card);
+            padding: 1.75rem 1.5rem;
+            text-align: center;
+            transition: background 0.25s;
+        }
+
+        .stat-item:hover {
+            background: var(--bg-elevated);
+        }
+
+        .stat-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1;
+            margin-bottom: 0.4rem;
+        }
+
+        .stat-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* ─── Sections ─── */
+        .content-section {
+            padding: 5rem 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .content-header {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 4rem;
+            margin-bottom: 3rem;
+            align-items: start;
+        }
+
+        .section-meta {
+            padding-top: 0.3rem;
+        }
+
+        .section-number {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.68rem;
+            color: var(--accent);
+            letter-spacing: 2px;
+            display: block;
+            margin-bottom: 0.4rem;
+        }
+
+        .section-title-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+        }
+
+        .section-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .section-content p {
+            font-size: 0.97rem;
+            line-height: 1.88;
+            color: var(--text-secondary);
+            max-width: 620px;
+            margin-bottom: 1rem;
+        }
+
+        .section-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* ─── Architecture Diagram ─── */
+        .arch-diagram {
+            margin-top: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            max-width: 600px;
+        }
+
+        .arch-layer {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.1rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            position: relative;
+            transition: border-color 0.3s, background 0.3s, transform 0.25s;
+            cursor: default;
+        }
+
+        .arch-layer:first-child {
+            border-radius: 4px 4px 0 0;
+        }
+
+        .arch-layer:last-child {
+            border-radius: 0 0 4px 4px;
+        }
+
+        .arch-layer:not(:last-child) {
+            border-bottom: none;
+        }
+
+        .arch-layer:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-elevated);
+            z-index: 1;
+        }
+
+        .arch-layer-icon {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            width: 32px;
+            text-align: center;
+        }
+
+        .arch-layer-name {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.78rem;
+            color: var(--accent);
+            font-weight: 500;
+            min-width: 160px;
+        }
+
+        .arch-layer-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .arch-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.2rem 0;
+            color: var(--accent);
+            font-size: 0.7rem;
+            opacity: 0.4;
+            margin-left: 1.5rem;
+        }
+
+        /* ─── Middleware Pipeline ─── */
+        .pipeline {
+            margin-top: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            max-width: 580px;
+        }
+
+        .pipeline-step {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.9rem 1.4rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            transition: border-color 0.3s, background 0.3s;
+        }
+
+        .pipeline-step:first-child {
+            border-radius: 4px 4px 0 0;
+        }
+
+        .pipeline-step:last-child {
+            border-radius: 0 0 4px 4px;
+        }
+
+        .pipeline-step:not(:last-child) {
+            border-bottom: none;
+        }
+
+        .pipeline-step:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-elevated);
+            z-index: 1;
+        }
+
+        .pipeline-num {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.62rem;
+            color: var(--accent);
+            opacity: 0.55;
+            min-width: 22px;
+        }
+
+        .pipeline-name {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.78rem;
+            color: var(--accent);
+            font-weight: 500;
+            min-width: 190px;
+        }
+
+        .pipeline-desc {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        /* ─── Feature Cards ─── */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+            margin-top: 2.5rem;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 1.75rem;
+            transition: border-color 0.3s, background 0.3s, transform 0.25s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 0;
+            background: var(--accent);
+            transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .feature-card:hover::before {
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-elevated);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px var(--shadow);
+        }
+
+        .feature-icon {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .feature-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .feature-desc {
+            font-size: 0.84rem;
+            color: var(--text-muted);
+            line-height: 1.75;
+        }
+
+        /* ─── Security Badge ─── */
+        .security-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.3rem 0.75rem;
+            background: var(--accent-dim);
+            border: 1px solid var(--accent-border);
+            border-radius: 2px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.62rem;
+            color: var(--accent);
+            letter-spacing: 1px;
+            margin-top: 1.25rem;
+        }
+
+        .security-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* ─── Endpoints ─── */
+        .endpoints-group {
+            margin-top: 2.5rem;
+        }
+
+        .endpoints-group+.endpoints-group {
+            margin-top: 2rem;
+        }
+
+        .endpoint-group-title {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--accent);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .endpoint-group-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-solid);
+        }
+
+        .endpoint-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            max-width: 680px;
+        }
+
+        .endpoint-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 1.25rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            transition: border-color 0.25s, background 0.25s;
+        }
+
+        .endpoint-item:first-child {
+            border-radius: 4px 4px 0 0;
+        }
+
+        .endpoint-item:last-child {
+            border-radius: 0 0 4px 4px;
+        }
+
+        .endpoint-item:not(:last-child) {
+            border-bottom: none;
+        }
+
+        .endpoint-item:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-elevated);
+            z-index: 1;
+        }
+
+        .method-badge {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.62rem;
+            font-weight: 500;
+            padding: 0.2rem 0.5rem;
+            border-radius: 2px;
+            min-width: 44px;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        .method-get {
+            background: rgba(100, 200, 100, 0.12);
+            color: #7edd7e;
+            border: 1px solid rgba(100, 200, 100, 0.2);
+        }
+
+        .method-post {
+            background: rgba(97, 175, 245, 0.12);
+            color: #7bbdf5;
+            border: 1px solid rgba(97, 175, 245, 0.2);
+        }
+
+        .method-put {
+            background: rgba(245, 197, 97, 0.12);
+            color: #f5c561;
+            border: 1px solid rgba(245, 197, 97, 0.2);
+        }
+
+        .method-delete {
+            background: rgba(245, 97, 97, 0.12);
+            color: #f56161;
+            border: 1px solid rgba(245, 97, 97, 0.2);
+        }
+
+        .endpoint-path {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            flex: 1;
+        }
+
+        .endpoint-path span {
+            color: var(--text-muted);
+        }
+
+        .endpoint-desc {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            min-width: 160px;
+            text-align: right;
+        }
+
+        .role-badge {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.58rem;
+            padding: 0.15rem 0.45rem;
+            border-radius: 2px;
+            letter-spacing: 0.5px;
+            background: var(--accent-dim);
+            color: var(--accent);
+            border: 1px solid var(--accent-border);
+            white-space: nowrap;
+        }
+
+        /* ─── RBAC Table ─── */
+        .rbac-table {
+            width: 100%;
+            max-width: 560px;
+            border-collapse: collapse;
+            margin-top: 2rem;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.78rem;
+        }
+
+        .rbac-table th {
+            padding: 0.75rem 1.25rem;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-solid);
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.68rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-align: left;
+        }
+
+        .rbac-table td {
+            padding: 0.75rem 1.25rem;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            background: var(--bg-card);
+            transition: background 0.2s;
+        }
+
+        .rbac-table tr:hover td {
+            background: var(--bg-elevated);
+        }
+
+        .check-yes {
+            color: var(--accent);
+        }
+
+        .check-no {
+            color: var(--text-muted);
+            opacity: 0.4;
+        }
+
+        /* ─── Code Block ─── */
+        .code-block {
+            margin-top: 2rem;
+            background: var(--code-bg);
+            border: 1px solid var(--border-solid);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.65rem 1.25rem;
+            border-bottom: 1px solid var(--border-solid);
+            background: var(--bg-elevated);
+        }
+
+        .code-lang {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .code-dots {
+            display: flex;
+            gap: 5px;
+        }
+
+        .code-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+        }
+
+        .code-dot:nth-child(1) {
+            background: #ff5f57;
+        }
+
+        .code-dot:nth-child(2) {
+            background: #febc2e;
+        }
+
+        .code-dot:nth-child(3) {
+            background: #28c840;
+        }
+
+        pre {
+            padding: 1.5rem;
+            overflow-x: auto;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.8rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        .kw {
+            color: #c8f561;
+        }
+
+        .str {
+            color: #f5c561;
+        }
+
+        .cm {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .prop {
+            color: #7bbdf5;
+        }
+
+        .val {
+            color: #7edd7e;
+        }
+
+        /* ─── Tech Grid ─── */
+        .tech-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.85rem;
+            margin-top: 2rem;
+        }
+
+        .tech-pill {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.7rem 1.2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            transition: all 0.25s;
+        }
+
+        .tech-pill:hover {
+            border-color: var(--accent-border);
+            background: var(--accent-dim);
+            transform: translateY(-2px);
+        }
+
+        .tech-pill-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .tech-pill-category {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.62rem;
+            color: var(--text-muted);
+            border-left: 1px solid var(--border);
+            padding-left: 0.6rem;
+        }
+
+        /* ─── Project Structure ─── */
+        .file-tree {
+            margin-top: 2rem;
+            background: var(--code-bg);
+            border: 1px solid var(--border-solid);
+            border-radius: 4px;
+            overflow: hidden;
+            max-width: 580px;
+        }
+
+        .file-tree-header {
+            padding: 0.65rem 1.25rem;
+            border-bottom: 1px solid var(--border-solid);
+            background: var(--bg-elevated);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .file-tree-inner {
+            padding: 1.25rem 1.5rem;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.78rem;
+            line-height: 1.9;
+            color: var(--text-secondary);
+        }
+
+        .tree-folder {
+            color: var(--accent);
+        }
+
+        .tree-file {
+            color: var(--text-muted);
+        }
+
+        .tree-comment {
+            color: var(--text-muted);
+            opacity: 0.5;
+        }
+
+        /* ─── Roadmap ─── */
+        .roadmap-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 2rem;
+            max-width: 560px;
+        }
+
+        .roadmap-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 1.4rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            transition: border-color 0.25s;
+        }
+
+        .roadmap-item:hover {
+            border-color: var(--accent-border);
+        }
+
+        .roadmap-check {
+            width: 18px;
+            height: 18px;
+            border: 1px solid var(--accent-border);
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+            background: var(--accent-dim);
+        }
+
+        .roadmap-check svg {
+            width: 10px;
+            height: 10px;
+            color: var(--accent);
+        }
+
+        .roadmap-text {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* ─── Lessons ─── */
+        .lessons-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            margin-top: 0;
+        }
+
+        .lesson-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 1.75rem;
+            transition: border-color 0.3s, background 0.3s, transform 0.25s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lesson-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 0;
+            background: var(--accent);
+            transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .lesson-card:hover::before {
+            height: 100%;
+        }
+
+        .lesson-card:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-elevated);
+            transform: translateY(-3px);
+        }
+
+        .lesson-icon {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .lesson-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem;
+            font-weight: 500;
+            margin-bottom: 0.6rem;
+            color: var(--text);
+        }
+
+        .lesson-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.75;
+        }
+
+        /* ─── Test Coverage ─── */
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: var(--border-solid);
+            border: 1px solid var(--border-solid);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 2rem;
+            max-width: 580px;
+        }
+
+        .test-item {
+            background: var(--bg-card);
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            transition: background 0.2s;
+        }
+
+        .test-item:hover {
+            background: var(--bg-elevated);
+        }
+
+        .test-name {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .test-count {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1;
+        }
+
+        .test-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
+
+        /* ─── Buttons ─── */
+        .btn {
+            padding: 0.85rem 2rem;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.82rem;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            border-radius: 3px;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(var(--accent-rgb), 0.28);
+            filter: brightness(1.05);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border-solid);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-border);
+            color: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        /* ─── Footer CTA ─── */
+        .footer-cta {
+            text-align: center;
+            padding: 5rem 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-cta-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .footer-cta h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.4rem;
+            font-weight: 500;
+            margin-bottom: 2.5rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        footer.bottom {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        footer.bottom p {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        /* ─── Animations ─── */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(35px);
+            transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ─── Responsive ─── */
+        @media (max-width: 900px) {
+            .content-header {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .header-label {
+                display: none;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .lessons-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .test-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .endpoint-desc {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Nav -->
+    <nav id="navbar">
+        <div class="nav-inner">
+            <a href="index.html" class="back-link">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                Back to Portfolio
+            </a>
+            <div class="nav-right">
+                <span class="header-label">LibraryMS · .NET 8 · JWT · xUnit · 3-Layer Architecture</span>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                    <span class="theme-icon moon"><i class="fas fa-moon"></i></span>
+                    <span class="theme-icon sun"><i class="fas fa-sun"></i></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+
+            <!-- Hero -->
+            <section class="hero">
+                <div class="hero-glow"></div>
+                <div class="hero-glow-left"></div>
+                <div class="hero-eyebrow">Featured Project</div>
+                <h1>Library Management<br><em>System API</em></h1>
+                <p class="project-subtitle">
+                    A comprehensive RESTful API built with .NET 8 and clean 3-layer architecture — covering book
+                    management, user administration, borrowing workflows, fine tracking, and system configuration with
+                    JWT security and 56+ unit tests.
+                </p>
+                <div class="tags">
+                    <span class="tag">.NET 8</span>
+                    <span class="tag">ASP.NET Core</span>
+                    <span class="tag">REST API</span>
+                    <span class="tag">JWT</span>
+                    <span class="tag">RBAC</span>
+                    <span class="tag">ADO.NET</span>
+                    <span class="tag">xUnit</span>
+                    <span class="tag">Moq</span>
+                    <span class="tag">SQL Server</span>
+                    <span class="tag">AutoMapper</span>
+                    <span class="tag">Swagger</span>
+                    <span class="tag">BCrypt</span>
+                </div>
+                <div class="hero-buttons">
+                    <a href="https://github.com/deemah-dev/LibraryMS_API" class="btn btn-primary" target="_blank">
+                        <i class="fab fa-github"></i> View on GitHub
+                    </a>
+                    <a href="#architecture" class="btn btn-secondary">
+                        <i class="fas fa-layer-group"></i> Explore Architecture
+                    </a>
+                </div>
+            </section>
+
+            <!-- Stats Bar -->
+            <div class="stats-bar reveal">
+                <div class="stat-item">
+                    <div class="stat-number">56+</div>
+                    <div class="stat-label">Unit Tests</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">9</div>
+                    <div class="stat-label">Controllers</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">Layers / Projects</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">User Roles</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="container">
+
+            <!-- 01: Architecture -->
+            <section class="content-section reveal" id="architecture">
+                <div class="content-header">
+                    <div class="section-meta">
+                        <span class="section-number">01 —</span>
+                        <span class="section-title-label">Architecture</span>
+                    </div>
+                    <div class="section-content">
+                        <h2>Clean 3-Layer Architecture</h2>
+                        <p>LibraryMS follows a strict API → BLL → DAL separation with a shared Core project for models
+                            and DTOs. Each layer communicates only through interfaces, ensuring low coupling, high
+                            cohesion, and full testability without touching a real database.</p>
+                    </div>
+                </div>
+
+                <div class="arch-diagram">
+                    <div class="arch-layer">
+                        <span class="arch-layer-icon">🌐</span>
+                        <span class="arch-layer-name">Library.API</span>
+                        <span class="arch-layer-desc">Controllers · HTTP Handling · Auth · Error Responses</span>
+                    </div>
+                    <div class="arch-arrow">↕</div>
+                    <div class="arch-layer">
+                        <span class="arch-layer-icon">⚙️</span>
+                        <span class="arch-layer-name">Library.BLL</span>
+                        <span class="arch-layer-desc">Services · Business Rules · AutoMapper · DTOs</span>
+                    </div>
+                    <div class="arch-arrow">↕</div>
+                    <div class="arch-layer">
+                        <span class="arch-layer-icon">🗄️</span>
+                        <span class="arch-layer-name">Library.DAL</span>
+                        <span class="arch-layer-desc">Repositories · Stored Procedures · ADO.NET</span>
+                    </div>
+                    <div class="arch-arrow">↕</div>
+                    <div class="arch-layer">
+                        <span class="arch-layer-icon">📦</span>
+                        <span class="arch-layer-name">Library.Core</span>
+                        <span class="arch-layer-desc">Shared Entities, Models & DTOs</span>
+                    </div>
+                </div>
+
+                <!-- File Tree -->
+                <div class="file-tree" style="margin-top:2.5rem;">
+                    <div class="file-tree-header">
+                        <div class="code-dots">
+                            <div class="code-dot"></div>
+                            <div class="code-dot"></div>
+                            <div class="code-dot"></div>
+                        </div>
+                        <span class="code-lang">Project Structure</span>
+                    </div>
+                    <div class="file-tree-inner">
+                        <span class="tree-folder">LibraryMS_API/</span>
+                        ├── <span class="tree-folder">Library.API/</span> <span class="tree-comment">← Presentation
+                            Layer</span>
+                        │ ├── <span class="tree-folder">Controllers/</span>
+                        │ │ ├── <span class="tree-file">AuthController.cs</span>
+                        │ │ ├── <span class="tree-file">BooksController.cs</span>
+                        │ │ ├── <span class="tree-file">UsersController.cs</span>
+                        │ │ ├── <span class="tree-file">BorrowingController.cs</span>
+                        │ │ ├── <span class="tree-file">FinesController.cs</span>
+                        │ │ └── <span class="tree-file">SettingsController.cs</span>
+                        │ └── <span class="tree-file">Program.cs</span> <span class="tree-comment">← DI & Pipeline
+                            Config</span>
+                        ├── <span class="tree-folder">Library.BLL/</span> <span class="tree-comment">← Business Logic
+                            Layer</span>
+                        │ ├── <span class="tree-folder">Services/</span>
+                        │ ├── <span class="tree-folder">Interfaces/</span>
+                        │ └── <span class="tree-folder">AutoMapper/</span>
+                        ├── <span class="tree-folder">Library.DAL/</span> <span class="tree-comment">← Data Access
+                            Layer</span>
+                        │ ├── <span class="tree-folder">Repositories/</span>
+                        │ └── <span class="tree-folder">Interfaces/</span>
+                        ├── <span class="tree-folder">Library.Core/</span> <span class="tree-comment">← Shared Models &
+                            DTOs</span>
+                        └── <span class="tree-folder">Library.BLL.Tests/</span> <span class="tree-comment">← 56+ Unit
+                            Tests</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 02: Middleware -->
+            <section class="content-section reveal">
+                <div class="content-header">
+                    <div class="section-meta">
+                        <span class="section-number">02 —</span>
+                        <span class="section-title-label">Middleware Pipeline</span>
+                    </div>
+                    <div class="section-content">
+                        <h2>Ordered Request Pipeline</h2>
+                        <p>Order matters in ASP.NET Core. The pipeline is carefully sequenced so rate limiting protects
+                            against abuse before authentication runs, and authentication resolves identity before
+                            authorization enforces role permissions.</p>
+                    </div>
+                </div>
+
+                <div class="pipeline">
+                    <div class="pipeline-step">
+                        <span class="pipeline-num">01</span>
+                        <span class="pipeline-name">HTTPS Redirection</span>
+                        <span class="pipeline-desc">Secure transport for all API calls</span>
+                    </div>
+                    <div class="pipeline-step">
+                        <span class="pipeline-num">02</span>
+                        <span class="pipeline-name">Rate Limiter</span>
+                        <span class="pipeline-desc">Fixed-window, per-IP abuse protection</span>
+                    </div>
+                    <div class="pipeline-step">
+                        <span class="pipeline-num">03</span>
+                        <span class="pipeline-name">Authentication</span>
+                        <span class="pipeline-desc">JWT Bearer token validation</span>
+                    </div>
+                    <div class="pipeline-step">
+                        <span class="pipeline-num">04</span>
+                        <span class="pipeline-name">Authorization</span>
+                        <span class="pipeline-desc">Role-based rules (Admin / Staff / User)</span>
+                    </div>
+                    <div class="pipeline-step">
+                        <span class="pipeline-num">05</span>
+                        <span class="pipeline-name">Exception Handling</span>
+                        <span class="pipeline-desc">Consistent structured error responses</span>
+                    </div>
+                    <div class="pipeline-step">
+                        <span class="pipeline-num">06</span>
+                        <span class="pipeline-name">MapControllers</span>
+                        <span class="pipeline-desc">Route to appropriate controller action</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 03: Features -->
+            <section class="content-section reveal">
+                <div class="content-header">
+                    <div class="section-meta">
+                        <span class="section-number">03 —</span>
+                        <span class="section-title-label">Key Features</span>
+                    </div>
+                    <div class="section-content">
+                        <h2>Concepts Applied in Practice</h2>
+                        <p>Every feature was chosen deliberately — not just to make things work, but to understand the
+                            reasoning behind each architectural decision and its impact on long-term maintainability.
+                        </p>
+                        <div class="security-badge">SECURITY LAYER ACTIVE</div>
+                    </div>
+                </div>
+
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <span class="feature-icon">📚</span>
+                        <div class="feature-title">Book Management</div>
+                        <p class="feature-desc">CRUD for books, copies, categories, and authors — including ISBN
+                            metadata, publication dates, and copy availability tracking.</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">👥</span>
+                        <div class="feature-title">User & Role Management</div>
+                        <p class="feature-desc">Secure user registration, JWT token generation, refresh token rotation,
+                            and explicit role-based access control.</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">🔄</span>
+                        <div class="feature-title">Borrowing Workflow</div>
+                        <p class="feature-desc">Borrow and return with automatic due-date tracking, availability
+                            updates, and full borrowing history logs.</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">💰</span>
+                        <div class="feature-title">Fine Management</div>
+                        <p class="feature-desc">Auto-calculate overdue fines, provide per-user fine summaries, and allow
+                            admin fine adjustments via API.</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">⚙️</span>
+                        <div class="feature-title">System Settings</div>
+                        <p class="feature-desc">Configure default borrow duration, day-rate penalties, and general
+                            system settings — all via secure admin endpoints.</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">🛡️</span>
+                        <div class="feature-title">Security & Auth</div>
+                        <p class="feature-desc">JWT access + refresh tokens, BCrypt password hashing, CORS origin
+                            whitelisting, and rate limiting on auth endpoints.</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">🧪</span>
+                        <div class="feature-title">Unit Testing</div>
+                        <p class="feature-desc">56+ xUnit tests with Moq for service and repository mocking — covering
+                            success paths, failures, and edge cases.</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">🗃️</span>
+                        <div class="feature-title">Repository Pattern</div>
+                        <p class="feature-desc">Data access through DAL interfaces so business services stay fully
+                            decoupled from persistence implementation details.</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-icon">📖</span>
+                        <div class="feature-title">Swagger / OpenAPI</div>
+                        <p class="feature-desc">Interactive API docs with JWT support for secure endpoint testing in
+                            development — full coverage of all controllers.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 04: Endpoints -->
+            <section class="content-section reveal">
+                <div class="content-header">
+                    <div class="section-meta">
+                        <span class="section-number">04 —</span>
+                        <span class="section-title-label">API Endpoints</span>
+                    </div>
+                    <div class="section-content">
+                        <h2>Full Endpoint Reference</h2>
+                        <p>All endpoints follow RESTful conventions with consistent status codes (200, 201, 400, 404,
+                            409) and a unified response format across all controllers.</p>
+                    </div>
+                </div>
+
+                <!-- Auth -->
+                <div class="endpoints-group">
+                    <div class="endpoint-group-title">Authentication</div>
+                    <div class="endpoint-list">
+                        <div class="endpoint-item">
+                            <span class="method-badge method-post">POST</span>
+                            <span class="endpoint-path"><span>/api/</span>Auth/Login</span>
+                            <span class="endpoint-desc">JWT token generation</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Books -->
+                <div class="endpoints-group">
+                    <div class="endpoint-group-title">Books</div>
+                    <div class="endpoint-list">
+                        <div class="endpoint-item">
+                            <span class="method-badge method-get">GET</span>
+                            <span class="endpoint-path"><span>/api/</span>Books/GetAllBooks</span>
+                            <span class="endpoint-desc">List all books</span>
+                        </div>
+                        <div class="endpoint-item">
+                            <span class="method-badge method-get">GET</span>
+                            <span class="endpoint-path"><span>/api/</span>Books/GetBook</span>
+                            <span class="endpoint-desc">Get specific book</span>
+                        </div>
+                        <div class="endpoint-item">
+                            <span class="method-badge method-post">POST</span>
+                            <span class="endpoint-path"><span>/api/</span>Books/AddBook</span>
+                            <span class="role-badge">Admin</span>
+                        </div>
+                        <div class="endpoint-item">
+                            <span class="method-badge method-put">PUT</span>
+                            <span class="endpoint-path"><span>/api/</span>Books/UpdateBook</span>
+                            <span class="role-badge">Admin</span>
+                        </div>
+                        <div class="endpoint-item">
+                            <span class="method-badge method-delete">DELETE</span>
+                            <span class="endpoint-path"><span>/api/</span>Books/DeleteBook</span>
+                            <span class="role-badge">Admin</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Borrowing -->
+                <div class="endpoints-group">
+                    <div class="endpoint-group-title">Borrowing</div>
+                    <div class="endpoint-list">
+                        <div class="endpoint-item">
+                            <span class="method-badge method-post">POST</span>
+                            <span class="endpoint-path"><span>/api/</span>Borrowing/BorrowBook</span>
+                            <span class="role-badge">Staff / Admin</span>
+                        </div>
+                        <div class="endpoint-item">
+                            <span class="method-badge method-put">PUT</span>
+                            <span class="endpoint-path"><span>/api/</span>Borrowing/ReturnBook</span>
+                            <span class="role-badge">Staff / Admin</span>
+                        </div>
+                        <div class="endpoint-item">
+                            <span class="method-badge method-get">GET</span>
+                            <span class="endpoint-path"><span>/api/</span>Borrowing/CheckLateFine</span>
+                            <span class="role-badge">Staff / Admin</span>
+                        </div>
+                        <div class="endpoint-item">
+                            <span class="method-badge method-get">GET</span>
+                            <span class="endpoint-path"><span>/api/</span>Borrowing/GetAllBorrowingRecords</span>
+                            <span class="role-badge">Admin</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fines -->
+                <div class="endpoints-group">
+                    <div class="endpoint-group-title">Fines & Settings</div>
+                    <div class="endpoint-list">
+                        <div class="endpoint-item">
+                            <span class="method-badge method-get">GET</span>
+                            <span class="endpoint-path"><span>/api/</span>Fines/GetAllFines</span>
+                            <span class="endpoint-desc">All fines</span>
+                        </div>
+                        <div class="endpoint-item">
+                            <span class="method-badge method-get">GET</span>
+                            <span class="endpoint-path"><span>/api/</span>Fines/GetUserFines</span>
+                            <span class="endpoint-desc">User fines + total</span>
+                        </div>
+                        <div class="endpoint-item">
+                            <span class="method-badge method-get">GET</span>
+                            <span class="endpoint-path"><span>/api/</span>Settings/GetSettings</span>
+                            <span class="role-badge">Admin</span>
+                        </div>
+                        <div class="endpoint-item">
+                            <span class="method-badge method-put">PUT</span>
+                            <span class="endpoint-path"><span>/api/</span>Settings/UpdateSettings</span>
+                            <span class="role-badge">Admin</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RBAC Table -->
+                <div style="margin-top:2.5rem;">
+                    <div class="endpoint-group-title">Role-Based Access Control</div>
+                    <table class="rbac-table">
+                        <thead>
+                            <tr>
+                                <th>Operation</th>
+                                <th>Public</th>
+                                <th>Staff</th>
+                                <th>Admin</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>GET (Read)</td>
+                                <td class="check-no">✕</td>
+                                <td class="check-yes">✓</td>
+                                <td class="check-yes">✓</td>
+                            </tr>
+                            <tr>
+                                <td>POST (Create)</td>
+                                <td class="check-no">✕</td>
+                                <td class="check-no">✕</td>
+                                <td class="check-yes">✓</td>
+                            </tr>
+                            <tr>
+                                <td>PUT (Update)</td>
+                                <td class="check-no">✕</td>
+                                <td class="check-no">✕</td>
+                                <td class="check-yes">✓</td>
+                            </tr>
+                            <tr>
+                                <td>DELETE</td>
+                                <td class="check-no">✕</td>
+                                <td class="check-no">✕</td>
+                                <td class="check-yes">✓</td>
+                            </tr>
+                            <tr>
+                                <td>BorrowBook / ReturnBook</td>
+                                <td class="check-no">✕</td>
+                                <td class="check-yes">✓</td>
+                                <td class="check-yes">✓</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 05: Request Examples -->
+            <section class="content-section reveal">
+                <div class="content-header">
+                    <div class="section-meta">
+                        <span class="section-number">05 —</span>
+                        <span class="section-title-label">Examples</span>
+                    </div>
+                    <div class="section-content">
+                        <h2>Request & Response Examples</h2>
+                        <p>All endpoints return a unified response envelope with message, data, and relevant IDs.
+                            Consistent formatting across the entire API surface.</p>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-dots">
+                            <div class="code-dot"></div>
+                            <div class="code-dot"></div>
+                            <div class="code-dot"></div>
+                        </div>
+                        <span class="code-lang">HTTP · Login Request</span>
+                    </div>
+                    <pre><span class="kw">POST</span> /api/Auth/Login
+<span class="prop">Content-Type</span>: application/json
+
+{
+  <span class="prop">"username"</span>: <span class="str">"admin"</span>,
+  <span class="prop">"password"</span>: <span class="str">"SecurePassword123!"</span>
+}
+
+<span class="cm">// Response 200 OK</span>
+{
+  <span class="prop">"accessToken"</span>:  <span class="str">"eyJhbGc..."</span>,
+  <span class="prop">"refreshToken"</span>: <span class="str">"base64encodedtoken..."</span>,
+  <span class="prop">"message"</span>:      <span class="str">"Login successful"</span>
+}</pre>
+                </div>
+
+                <div class="code-block" style="margin-top:1.25rem;">
+                    <div class="code-header">
+                        <div class="code-dots">
+                            <div class="code-dot"></div>
+                            <div class="code-dot"></div>
+                            <div class="code-dot"></div>
+                        </div>
+                        <span class="code-lang">HTTP · Add Book (Admin)</span>
+                    </div>
+                    <pre><span class="kw">POST</span> /api/Books/AddBook
+<span class="prop">Authorization</span>: Bearer eyJhbGc...
+<span class="prop">Content-Type</span>: application/json
+
+{
+  <span class="prop">"title"</span>:           <span class="str">"The Great Gatsby"</span>,
+  <span class="prop">"authorId"</span>:        <span class="val">1</span>,
+  <span class="prop">"categoryId"</span>:      <span class="val">2</span>,
+  <span class="prop">"isbn"</span>:            <span class="str">"978-0743273565"</span>,
+  <span class="prop">"publicationDate"</span>: <span class="str">"1925-04-10"</span>
+}
+
+<span class="cm">// Response 201 Created</span>
+{
+  <span class="prop">"message"</span>: <span class="str">"Book created successfully."</span>,
+  <span class="prop">"bookId"</span>:  <span class="val">1</span>
+}</pre>
+                </div>
+
+                <div class="code-block" style="margin-top:1.25rem;">
+                    <div class="code-header">
+                        <div class="code-dots">
+                            <div class="code-dot"></div>
+                            <div class="code-dot"></div>
+                            <div class="code-dot"></div>
+                        </div>
+                        <span class="code-lang">csharp · DI Configuration</span>
+                    </div>
+                    <pre><span class="cm">// Program.cs — clean DI registration</span>
+builder.Services.<span class="kw">AddBusinessServices</span>();   <span class="cm">// BLL</span>
+builder.Services.<span class="kw">AddDataLayer</span>();           <span class="cm">// DAL</span>
+builder.Services.<span class="kw">AddAutoMapper</span>(profiles);  <span class="cm">// Mapping</span>
+builder.Services.<span class="kw">AddJwtAuthentication</span>(     <span class="cm">// Security</span>
+    config[<span class="str">"JWT_SECRET_KEY"</span>]
+);</pre>
+                </div>
+            </section>
+
+            <!-- 06: Tech Stack -->
+            <section class="content-section reveal">
+                <div class="content-header">
+                    <div class="section-meta">
+                        <span class="section-number">06 —</span>
+                        <span class="section-title-label">Tech Stack</span>
+                    </div>
+                    <div class="section-content">
+                        <h2>Tools & Technologies</h2>
+                        <p>The stack was chosen to reflect real-world .NET backend development — covering the full
+                            lifecycle from API design to security, data persistence, and automated testing.</p>
+                    </div>
+                </div>
+                <div class="tech-grid">
+                    <div class="tech-pill"><span class="tech-pill-label">.NET 8 / ASP.NET Core</span><span
+                            class="tech-pill-category">Framework</span></div>
+                    <div class="tech-pill"><span class="tech-pill-label">C#</span><span
+                            class="tech-pill-category">Language</span></div>
+                    <div class="tech-pill"><span class="tech-pill-label">JWT / JwtBearer</span><span
+                            class="tech-pill-category">Auth</span></div>
+                    <div class="tech-pill"><span class="tech-pill-label">BCrypt.Net</span><span
+                            class="tech-pill-category">Password Hashing</span></div>
+                    <div class="tech-pill"><span class="tech-pill-label">Rate Limiter</span><span
+                            class="tech-pill-category">Security</span></div>
+                    <div class="tech-pill"><span class="tech-pill-label">CORS</span><span
+                            class="tech-pill-category">Security</span></div>
+                    <div class="tech-pill"><span class="tech-pill-label">SQL Server</span><span
+                            class="tech-pill-category">Database</span></div>
+                    <div class="tech-pill"><span class="tech-pill-label">ADO.NET</span><span
+                            class="tech-pill-category">Data Access</span></div>
+                    <div class="tech-pill"><span class="tech-pill-label">AutoMapper</span><span
+                            class="tech-pill-category">Mapping</span></div>
+                    <div class="tech-pill"><span class="tech-pill-label">xUnit</span><span
+                            class="tech-pill-category">Testing</span></div>
+                    <div class="tech-pill"><span class="tech-pill-label">Moq</span><span
+                            class="tech-pill-category">Mocking</span></div>
+                    <div class="tech-pill"><span class="tech-pill-label">Swagger / OpenAPI</span><span
+                            class="tech-pill-category">Docs</span></div>
+                    <div class="tech-pill"><span class="tech-pill-label">Git & GitHub</span><span
+                            class="tech-pill-category">Version Control</span></div>
+                </div>
+            </section>
+
+            <!-- 07: Unit Tests -->
+            <section class="content-section reveal">
+                <div class="content-header">
+                    <div class="section-meta">
+                        <span class="section-number">07 —</span>
+                        <span class="section-title-label">Unit Tests</span>
+                    </div>
+                    <div class="section-content">
+                        <h2>56+ Tests, Full Coverage</h2>
+                        <p>Every service has dedicated test coverage using xUnit and Moq. Tests cover success paths,
+                            error cases, null input, and edge cases — making each service method's contract explicit and
+                            verifiable.</p>
+                    </div>
+                </div>
+
+                <div class="test-grid">
+                    <div class="test-item">
+                        <span class="test-name">AuthService</span>
+                        <span class="test-count">4</span>
+                        <span class="test-label">tests</span>
+                    </div>
+                    <div class="test-item">
+                        <span class="test-name">UsersService</span>
+                        <span class="test-count">9</span>
+                        <span class="test-label">tests</span>
+                    </div>
+                    <div class="test-item">
+                        <span class="test-name">BooksService</span>
+                        <span class="test-count">7</span>
+                        <span class="test-label">tests</span>
+                    </div>
+                    <div class="test-item">
+                        <span class="test-name">BorrowingService</span>
+                        <span class="test-count">7</span>
+                        <span class="test-label">tests</span>
+                    </div>
+                    <div class="test-item">
+                        <span class="test-name">CategoriesService</span>
+                        <span class="test-count">7</span>
+                        <span class="test-label">tests</span>
+                    </div>
+                    <div class="test-item">
+                        <span class="test-name">BookCopiesService</span>
+                        <span class="test-count">6</span>
+                        <span class="test-label">tests</span>
+                    </div>
+                    <div class="test-item">
+                        <span class="test-name">AuthorsService</span>
+                        <span class="test-count">5</span>
+                        <span class="test-label">tests</span>
+                    </div>
+                    <div class="test-item">
+                        <span class="test-name">FinesService</span>
+                        <span class="test-count">3</span>
+                        <span class="test-label">tests</span>
+                    </div>
+                    <div class="test-item">
+                        <span class="test-name">SettingsService</span>
+                        <span class="test-count">6</span>
+                        <span class="test-label">tests</span>
+                    </div>
+                </div>
+
+                <div class="code-block" style="margin-top:2rem; max-width:580px;">
+                    <div class="code-header">
+                        <div class="code-dots">
+                            <div class="code-dot"></div>
+                            <div class="code-dot"></div>
+                            <div class="code-dot"></div>
+                        </div>
+                        <span class="code-lang">bash · Run Tests</span>
+                    </div>
+                    <pre><span class="cm"># Run all tests</span>
+dotnet test
+
+<span class="cm"># Run with coverage</span>
+dotnet test /p:CollectCoverage=<span class="val">true</span></pre>
+                </div>
+            </section>
+
+            <!-- 08: Roadmap -->
+            <section class="content-section reveal">
+                <div class="content-header">
+                    <div class="section-meta">
+                        <span class="section-number">08 —</span>
+                        <span class="section-title-label">Roadmap</span>
+                    </div>
+                    <div class="section-content">
+                        <h2>The Evolution Path</h2>
+                        <p>This project is a deliberate learning artifact. The roadmap reflects a path toward modern,
+                            production-grade architecture — each step building on the last toward Clean Architecture and
+                            CQRS.</p>
+                    </div>
+                </div>
+                <div class="roadmap-list">
+                    <div class="roadmap-item">
+                        <div class="roadmap-check"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor"
+                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" />
+                            </svg></div>
+                        <span class="roadmap-text">JWT authentication with access & refresh token rotation</span>
+                    </div>
+                    <div class="roadmap-item">
+                        <div class="roadmap-check"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor"
+                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" />
+                            </svg></div>
+                        <span class="roadmap-text">Role-based access control (Admin / Staff / User)</span>
+                    </div>
+                    <div class="roadmap-item">
+                        <div class="roadmap-check"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor"
+                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" />
+                            </svg></div>
+                        <span class="roadmap-text">Rate limiting on auth endpoints (fixed-window, per-IP)</span>
+                    </div>
+                    <div class="roadmap-item">
+                        <div class="roadmap-check"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor"
+                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" />
+                            </svg></div>
+                        <span class="roadmap-text">CORS policy with origin whitelisting</span>
+                    </div>
+                    <div class="roadmap-item">
+                        <div class="roadmap-check"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor"
+                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" />
+                            </svg></div>
+                        <span class="roadmap-text">AutoMapper for clean DTO ↔ Entity mapping</span>
+                    </div>
+                    <div class="roadmap-item">
+                        <div class="roadmap-check"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor"
+                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" />
+                            </svg></div>
+                        <span class="roadmap-text">Migrate to Clean Architecture (Domain-Centric)</span>
+                    </div>
+                    <div class="roadmap-item">
+                        <div class="roadmap-check"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor"
+                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" />
+                            </svg></div>
+                        <span class="roadmap-text">FluentValidation for request validation</span>
+                    </div>
+                    <div class="roadmap-item">
+                        <div class="roadmap-check"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor"
+                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" />
+                            </svg></div>
+                        <span class="roadmap-text">CQRS pattern with MediatR</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 09: Lessons -->
+            <section class="content-section reveal">
+                <div class="content-header">
+                    <div class="section-meta">
+                        <span class="section-number">↗ —</span>
+                        <span class="section-title-label">Reflection</span>
+                    </div>
+                    <div class="section-content">
+                        <h2>Lessons Learned</h2>
+                        <p>Building this project was less about writing CRUD endpoints and more about internalizing the
+                            thinking patterns behind professional backend development — understanding why decisions are
+                            made, not just how to implement them.</p>
+                    </div>
+                </div>
+
+                <div class="lessons-grid">
+                    <div class="lesson-card">
+                        <span class="lesson-icon">🔌</span>
+                        <div class="lesson-title">Interfaces Are Not Optional</div>
+                        <p class="lesson-desc">Writing against interfaces rather than concrete classes unlocked real
+                            testability. Once every dependency could be mocked, business logic became provably correct
+                            without touching a database.</p>
+                    </div>
+                    <div class="lesson-card">
+                        <span class="lesson-icon">🔐</span>
+                        <div class="lesson-title">Security Is a Layer, Not an Afterthought</div>
+                        <p class="lesson-desc">Adding JWT, RBAC, and rate limiting taught me that security decisions
+                            cascade through every layer. Choosing where to validate identity shapes the entire design.
+                        </p>
+                    </div>
+                    <div class="lesson-card">
+                        <span class="lesson-icon">🧱</span>
+                        <div class="lesson-title">Static Classes Are a Trap</div>
+                        <p class="lesson-desc">The refactor from static helper classes to instance-based services was a
+                            turning point. Static state is invisible coupling — hard to test, replace, and reason about
+                            at scale.</p>
+                    </div>
+                    <div class="lesson-card">
+                        <span class="lesson-icon">📐</span>
+                        <div class="lesson-title">DTOs Protect Your Domain</div>
+                        <p class="lesson-desc">Separating API contracts from database entities is about owning your
+                            design. When the schema changed, the API stayed stable. That's the power of the DTO
+                            boundary.</p>
+                    </div>
+                    <div class="lesson-card">
+                        <span class="lesson-icon">🚦</span>
+                        <div class="lesson-title">Middleware Order Is a Design Decision</div>
+                        <p class="lesson-desc">Learning that rate limiting must precede authentication made the request
+                            pipeline feel like deliberate architecture rather than just configuration. Order is
+                            semantics.</p>
+                    </div>
+                    <div class="lesson-card">
+                        <span class="lesson-icon">🧪</span>
+                        <div class="lesson-title">Tests Are Documentation</div>
+                        <p class="lesson-desc">Writing xUnit tests with Moq forced me to articulate expected behavior
+                            explicitly. A well-written test is the most honest specification a codebase can have.</p>
+                    </div>
+                    <div class="lesson-card">
+                        <span class="lesson-icon">🏗️</span>
+                        <div class="lesson-title">Architecture Is a Conversation</div>
+                        <p class="lesson-desc">N-Tier isn't wrong — it's a stepping stone. Understanding its trade-offs
+                            firsthand made Clean Architecture's domain-centric approach feel like a logical evolution.
+                        </p>
+                    </div>
+                    <div class="lesson-card">
+                        <span class="lesson-icon">🗄️</span>
+                        <div class="lesson-title">Repositories Earn Their Keep</div>
+                        <p class="lesson-desc">Abstracting data access felt like overhead at first. But swapping a real
+                            SQL implementation for an in-memory mock in tests proved the value — flexibility without
+                            friction.</p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Footer CTA -->
+        <div class="footer-cta reveal">
+            <div class="container">
+                <p class="footer-cta-label">Like what you see?</p>
+                <h3>Let's work together</h3>
+                <div class="cta-buttons">
+                    <a href="https://github.com/deemah-dev/LibraryMS_API" class="btn btn-primary" target="_blank">
+                        <i class="fab fa-github"></i> View on GitHub
+                    </a>
+                    <a href="index.html" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Portfolio
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <footer class="bottom">
+            <div class="container">
+                <p>© 2026 Dima Musallam — All rights reserved.</p>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+        // Theme Toggle — sync with portfolio
+        const html = document.documentElement;
+        const themeBtn = document.getElementById('themeToggle');
+        const saved = localStorage.getItem('theme') || 'dark';
+        html.setAttribute('data-theme', saved);
+
+        themeBtn.addEventListener('click', () => {
+            const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        });
+
+        // Nav scroll shadow
+        window.addEventListener('scroll', () => {
+            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+        });
+
+        // Scroll reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.07, rootMargin: '0px 0px -50px 0px' });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', function (e) {
+                const t = document.querySelector(this.getAttribute('href'));
+                if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+            });
+        });
+    </script>
+</body>
+
+</html>
